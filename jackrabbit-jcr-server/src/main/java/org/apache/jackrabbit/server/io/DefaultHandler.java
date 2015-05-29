@@ -71,7 +71,7 @@ import java.util.HashMap;
  * Subclasses therefore should provide their own {@link #importData(ImportContext, boolean, Node)
  * importData} method, that handles the data according their needs.
  */
-public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandler {
+public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandler, DeleteHandler {
 
     private static Logger log = LoggerFactory.getLogger(DefaultHandler.class);
 
@@ -853,5 +853,29 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
 
     public void setContentNodetype(String contentNodetype) {
         this.contentNodetype = contentNodetype;
+    }
+
+    @Override
+    public boolean delete(DeleteContext deleteContext, DavResource member) throws DavException {
+        log.debug("[DELETE_HANDLER]:Default Handler taking care of delete");
+        try {
+            String itemPath = member.getLocator().getRepositoryPath();
+            Item memItem = deleteContext.getSession().getItem(itemPath);
+            if (memItem instanceof Node) {
+                ((Node)memItem).removeShare();
+            } else {
+                memItem.remove();
+            }
+            deleteContext.getSession().save();
+            log.debug("[DELETE_HANDLER]:Default Handler deleted successfully");
+            return true;
+        } catch (RepositoryException e) {
+            throw new JcrDavException(e);
+        }
+    }
+
+    @Override
+    public boolean canDelete(DeleteContext deleteContext, DavResource member) {
+        return true;
     }
 }
