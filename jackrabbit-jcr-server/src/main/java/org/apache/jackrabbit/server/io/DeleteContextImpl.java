@@ -17,14 +17,10 @@
 
 package org.apache.jackrabbit.server.io;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.jcr.Session;
 
 public class DeleteContextImpl implements  DeleteContext {
 
-    private static Logger log = LoggerFactory.getLogger(DeleteContextImpl.class);
     private final Session session;
 
     public DeleteContextImpl(Session session) {

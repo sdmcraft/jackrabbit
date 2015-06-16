@@ -31,8 +31,7 @@ public interface DeleteManager {
      *
      * @param deleteContext The context associated with the DELETE operation
      * @param resource The resource to be deleted
-     * @return true if this instance successfully executed the delete operation
-     * with the given parameters;
+     * @return true if this instance successfully executed the delete operation with the given parameters;
      * false otherwise.
      * @throws DavException If an error occurs.
      */
@@ -40,7 +39,7 @@ public interface DeleteManager {
 
     /**
      *
-     * @param deleteHandler Register's a {@link org.apache.jackrabbit.server.io.DeleteHandler} with this delete manager
+     * @param deleteHandler Registers a {@link org.apache.jackrabbit.server.io.DeleteHandler} with this delete manager
      */
     public void addDeleteHandler(DeleteHandler deleteHandler);
 

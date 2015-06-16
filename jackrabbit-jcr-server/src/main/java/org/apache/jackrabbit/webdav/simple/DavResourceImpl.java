@@ -20,7 +20,6 @@ import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.server.io.AbstractExportContext;
 import org.apache.jackrabbit.server.io.CopyMoveContextImpl;
 import org.apache.jackrabbit.server.io.DefaultIOListener;
-import org.apache.jackrabbit.server.io.DeleteContext;
 import org.apache.jackrabbit.server.io.DeleteContextImpl;
 import org.apache.jackrabbit.server.io.DeleteManager;
 import org.apache.jackrabbit.server.io.ExportContext;
@@ -560,7 +559,6 @@ public class DavResourceImpl implements DavResource, BindableResource, JcrConsta
             throw new DavException(DavServletResponse.SC_FORBIDDEN);
         }
 
-        log.debug("[DELETE_HANDLER]:Delegating to delete manager for deletion");
         DeleteManager dm = config.getDeleteManager();
         dm.delete(new DeleteContextImpl(getJcrSession()), member);
 

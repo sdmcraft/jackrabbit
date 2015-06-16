@@ -857,7 +857,6 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
 
     @Override
     public boolean delete(DeleteContext deleteContext, DavResource member) throws DavException {
-        log.debug("[DELETE_HANDLER]:Default Handler taking care of delete");
         try {
             String itemPath = member.getLocator().getRepositoryPath();
             Item memItem = deleteContext.getSession().getItem(itemPath);
@@ -867,7 +866,7 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
                 memItem.remove();
             }
             deleteContext.getSession().save();
-            log.debug("[DELETE_HANDLER]:Default Handler deleted successfully");
+            log.debug("default handler deleted " + member.getResourcePath());
             return true;
         } catch (RepositoryException e) {
             throw new JcrDavException(e);

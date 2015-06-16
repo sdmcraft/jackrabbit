@@ -480,7 +480,6 @@ public class ResourceConfig {
             log.debug("Missing delete-manager > building default.");
             deleteManager = DeleteManagerImpl.getDefaultManager();
         }
-        log.debug("[DELETE_HANDLER]:Resource config returning delete manager");
         return deleteManager;
     }
 

@@ -27,22 +27,25 @@ import org.apache.jackrabbit.webdav.DavResource;
 public interface DeleteHandler {
 
     /**
+     * Executes the delete operation with the given parameters.
      *
      * @param deleteContext The context of the delete.
      * @param resource The resource to be deleted
-     * @return true if this instance successfully executed the delete operation
-     * with the given parameters;
+     * @return true if this instance successfully executed the delete operation with the given parameters;
      * false otherwise.
      * @throws DavException If an error occurs.
      */
     public boolean delete(DeleteContext deleteContext, DavResource resource) throws DavException;
 
+
     /**
+     * Validates if this handler is able to execute a delete operation with the given
+     * parameters.
      *
      * @param deleteContext The context of the delete
      * @param resource The resource to be deleted
-     * @return  true if this instance successfully can execute the delete operation
-     * with the given parameters; false otherwise.
+     * @return  true if this instance can successfully execute the delete operation with the given parameters;
+     * false otherwise.
      */
     public boolean canDelete(DeleteContext deleteContext, DavResource resource);
 }

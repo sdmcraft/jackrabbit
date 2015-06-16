@@ -19,15 +19,12 @@ package org.apache.jackrabbit.server.io;
 
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeleteManagerImpl implements DeleteManager {
 
-    private static Logger log = LoggerFactory.getLogger(DeleteManagerImpl.class);
     private static DeleteManager DEFAULT_MANAGER;
 
     private final List<DeleteHandler> deleteHandlers = new ArrayList<DeleteHandler>();
@@ -35,7 +32,6 @@ public class DeleteManagerImpl implements DeleteManager {
 
     @Override
     public boolean delete(DeleteContext deleteContext, DavResource member) throws DavException {
-        log.debug("[DELETE_HANDLER]:Inside delete manager for deletion");
         boolean success = false;
         DeleteHandler[] deleteHandlers = getDeleteHandlers();
         for (int i = 0; i < deleteHandlers.length && !success; i++) {
@@ -44,7 +40,6 @@ public class DeleteManagerImpl implements DeleteManager {
                 success = dh.delete(deleteContext, member);
             }
         }
-        log.debug("[DELETE_HANDLER]:delete manager deletion successful:" + success);
         return success;
     }
 
@@ -53,7 +48,6 @@ public class DeleteManagerImpl implements DeleteManager {
         if (deleteHandler == null) {
             throw new IllegalArgumentException("'null' is not a valid DeleteHandler.");
         }
-        log.debug("[DELETE_HANDLER]:Added a delete handler");
         deleteHandlers.add(deleteHandler);
 
     }
@@ -69,7 +63,6 @@ public class DeleteManagerImpl implements DeleteManager {
             manager.addDeleteHandler(new DefaultHandler());
             DEFAULT_MANAGER = manager;
         }
-        log.debug("[DELETE_HANDLER]:Returning default delete manager with default handler inside it");
         return DEFAULT_MANAGER;
     }
 
