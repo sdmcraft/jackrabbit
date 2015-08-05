@@ -132,6 +132,17 @@ public class IfHeader implements Header {
     }
 
     /**
+     * Parses the <em>If</em> header and creates and internal representation
+     * which is easy to query.
+     *
+     * @param headerValue The <em>If</em> header value
+     */
+    public IfHeader(String headerValue) {
+        this.headerValue = headerValue;
+        ifHeader = parse();
+    }
+
+    /**
      * Return {@link DavConstants#HEADER_IF If}
      *
      * @return {@link DavConstants#HEADER_IF If}

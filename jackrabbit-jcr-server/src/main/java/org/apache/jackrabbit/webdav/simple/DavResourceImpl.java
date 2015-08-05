@@ -29,6 +29,8 @@ import org.apache.jackrabbit.server.io.IOManager;
 import org.apache.jackrabbit.server.io.IOUtil;
 import org.apache.jackrabbit.server.io.ImportContext;
 import org.apache.jackrabbit.server.io.ImportContextImpl;
+import org.apache.jackrabbit.server.io.LockContextImpl;
+import org.apache.jackrabbit.server.io.LockOperationManager;
 import org.apache.jackrabbit.server.io.PropertyExportContext;
 import org.apache.jackrabbit.server.io.PropertyImportContext;
 import org.apache.jackrabbit.util.Text;
@@ -677,6 +679,10 @@ public class DavResourceImpl implements DavResource, BindableResource, JcrConsta
      * @see DavResource#lock(LockInfo)
      */
     public ActiveLock lock(LockInfo lockInfo) throws DavException {
+
+        LockOperationManager lockOperationManager = config.getLockOperationManager();
+        lockOperationManager.lock(new LockContextImpl(getJcrSession()), this);
+
         ActiveLock lock = null;
         if (isLockable(lockInfo.getType(), lockInfo.getScope())) {
             // TODO: deal with existing locks, that may have been created, before the node was jcr-lockable...
