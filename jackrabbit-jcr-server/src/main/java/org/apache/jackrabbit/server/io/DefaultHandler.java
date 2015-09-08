@@ -23,7 +23,6 @@ import org.apache.jackrabbit.util.Text;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.DavServletResponse;
-import org.apache.jackrabbit.webdav.header.IfHeader;
 import org.apache.jackrabbit.webdav.jcr.JcrDavException;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -72,7 +71,7 @@ import java.util.HashMap;
  * Subclasses therefore should provide their own {@link #importData(ImportContext, boolean, Node)
  * importData} method, that handles the data according their needs.
  */
-public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandler, DeleteHandler, LockHandler {
+public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandler, DeleteHandler {
 
     private static Logger log = LoggerFactory.getLogger(DefaultHandler.class);
 
@@ -753,60 +752,6 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
         }
     }
 
-    //----------------------------------------------------< LockHandler >---
-
-    /**
-     * @see LockHandler#lock(LockContext, org.apache.jackrabbit.webdav.DavResource)
-     */
-    @Override
-    public boolean lock(LockContext lockContext, DavResource resource) throws DavException {
-        return false;
-    }
-
-    /**
-     * @see LockHandler#unlock(LockContext, org.apache.jackrabbit.webdav.DavResource)
-     */
-    @Override
-    public boolean unlock(LockContext lockContext, DavResource resource) throws DavException {
-        return false;
-    }
-
-    /**
-     * @see LockHandler#canLock(LockContext, org.apache.jackrabbit.webdav.DavResource)
-     */
-    @Override
-    public boolean canLock(LockContext lockContext, DavResource resource) {
-        return true;
-    }
-
-    /**
-     * @see LockHandler#canUnlock(LockContext, org.apache.jackrabbit.webdav.DavResource)
-     */
-    @Override
-    public boolean canUnlock(LockContext lockContext, DavResource resource) {
-        return true;
-    }
-
-    /**
-     * @see org.apache.jackrabbit.webdav.DavServletRequest#matchesIfHeader(String, String, String)
-     * @see org.apache.jackrabbit.webdav.header.IfHeader#matches(String, String, String)
-     */
-    private boolean matchesIfHeader(String href, String token, String eTag) {
-        return ifHeader.matches(href, token, isStrongETag(eTag) ?  eTag : "");
-    }
-
-    /**
-     * Returns true if the given string represents a strong etag.
-     *
-     * @param eTag
-     * @return true, if its a strong etag
-     */
-    private static boolean isStrongETag(String eTag) {
-        return eTag != null && eTag.length() > 0 && !eTag.startsWith("W\\");
-    }
-
-
-
     //------------------------------------------------------------< private >---
     /**
      * Builds a webdav property name from the given jcrName. In case the jcrName
@@ -938,5 +883,4 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
     public void setContentNodetype(String contentNodetype) {
         this.contentNodetype = contentNodetype;
     }
-
 }

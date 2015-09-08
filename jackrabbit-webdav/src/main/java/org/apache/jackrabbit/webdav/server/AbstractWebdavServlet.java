@@ -44,7 +44,6 @@ import org.apache.jackrabbit.webdav.io.OutputContextImpl;
 import org.apache.jackrabbit.webdav.lock.ActiveLock;
 import org.apache.jackrabbit.webdav.lock.LockDiscovery;
 import org.apache.jackrabbit.webdav.lock.LockInfo;
-import org.apache.jackrabbit.webdav.lock.LockManager;
 import org.apache.jackrabbit.webdav.observation.EventDiscovery;
 import org.apache.jackrabbit.webdav.observation.ObservationResource;
 import org.apache.jackrabbit.webdav.observation.Subscription;
@@ -871,8 +870,6 @@ abstract public class AbstractWebdavServlet extends HttpServlet implements DavCo
      */
     protected void doLock(WebdavRequest request, WebdavResponse response,
                           DavResource resource) throws IOException, DavException {
-
-
 
         LockInfo lockInfo = request.getLockInfo();
         if (lockInfo.isRefreshLock()) {
