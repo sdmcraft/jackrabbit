@@ -112,6 +112,7 @@ public class DavResourceImpl implements DavResource, BindableResource, JcrConsta
     
     private DavResourceFactory factory;
     private LockManager lockManager;
+    private LockManager defaultLockManager;
     private JcrDavSession session;
     private Node node;
     private DavResourceLocator locator;
@@ -139,6 +140,25 @@ public class DavResourceImpl implements DavResource, BindableResource, JcrConsta
                            boolean isCollection) throws DavException {
         this(locator, factory, session, config, null);
         this.isCollection = isCollection;
+    }
+
+    /**
+     * Create a new {@link DavResource}.
+     *
+     * @param locator
+     * @param factory
+     * @param session
+     * @param config
+     * @param isCollection
+     * @param defaultLockManager
+     * @throws DavException
+     */
+    public DavResourceImpl(DavResourceLocator locator, DavResourceFactory factory,
+                           DavSession session, ResourceConfig config,
+                           boolean isCollection, LockManager defaultLockManager) throws DavException {
+        this(locator, factory, session, config, null);
+        this.isCollection = isCollection;
+        this.defaultLockManager = defaultLockManager;
     }
 
     /**
@@ -681,7 +701,10 @@ public class DavResourceImpl implements DavResource, BindableResource, JcrConsta
     public ActiveLock lock(LockInfo lockInfo) throws DavException {
 
         LockOperationManager lockOperationManager = config.getLockOperationManager();
-        lockOperationManager.lock(new LockContextImpl(getJcrSession()), this);
+        LockManager effectiveLockManager = lockOperationManager.getLockManager(new LockContextImpl(getJcrSession()), this);
+        if(effectiveLockManager == null) {
+            effectiveLockManager = this.lockManager;
+        }
 
         ActiveLock lock = null;
         if (isLockable(lockInfo.getType(), lockInfo.getScope())) {
@@ -705,7 +728,7 @@ public class DavResourceImpl implements DavResource, BindableResource, JcrConsta
                 }
             } else {
                 // create a new webdav lock
-                lock = lockManager.createLock(lockInfo, this);
+                lock = effectiveLockManager.createLock(lockInfo, this);
             }
         } else {
             throw new DavException(DavServletResponse.SC_PRECONDITION_FAILED, "Unsupported lock type or scope.");

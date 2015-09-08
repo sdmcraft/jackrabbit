@@ -16,6 +16,7 @@
  */
 package org.apache.jackrabbit.webdav.simple;
 
+import org.apache.jackrabbit.server.io.LockContextImpl;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavMethods;
 import org.apache.jackrabbit.webdav.DavResource;
@@ -75,19 +76,32 @@ public class ResourceFactoryImpl implements DavResourceFactory {
     public DavResource createResource(DavResourceLocator locator, DavServletRequest request,
                                       DavServletResponse response) throws DavException {
         try {
-            Node node = getNode(request.getDavSession(), locator);
+            DavSession davSession = request.getDavSession();
+            Node node = getNode(davSession, locator);
             DavResource resource;
             if (node == null) {
                 log.debug("Creating resource for non-existing repository node.");
                 boolean isCollection = DavMethods.isCreateCollectionRequest(request);
-                resource = createNullResource(locator, request.getDavSession(), isCollection);
+                resource = createNullResource(locator, davSession, isCollection);
             } else {
-                resource = createResource(node, locator, request.getDavSession());
+                resource = createResource(node, locator, davSession);
             }
-            resource.addLockManager(lockMgr);
+            addLockManger(resource, davSession);
             return resource;
         } catch (RepositoryException e) {
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+        }
+    }
+
+    private void addLockManger(DavResource resource, DavSession davSession) throws DavException {
+        JcrDavSession.checkImplementation(davSession);
+        JcrDavSession jcrDavSession = (JcrDavSession)davSession;
+        Session jcrSession = jcrDavSession.getRepositorySession();
+        LockManager resourceLockMgr = resourceConfig.getLockOperationManager().getLockManager(new LockContextImpl(jcrSession), resource);
+        if(resourceLockMgr != null) {
+            resource.addLockManager(resourceLockMgr);
+        } else {
+            resource.addLockManager(lockMgr);
         }
     }
 
@@ -105,7 +119,7 @@ public class ResourceFactoryImpl implements DavResourceFactory {
         try {
             Node node = getNode(session, locator);
             DavResource resource = createResource(node, locator, session);
-            resource.addLockManager(lockMgr);
+            addLockManger(resource, session);
             return resource;
         } catch (RepositoryException e) {
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e);

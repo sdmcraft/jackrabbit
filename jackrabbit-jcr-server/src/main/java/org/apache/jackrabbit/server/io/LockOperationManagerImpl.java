@@ -19,6 +19,7 @@ package org.apache.jackrabbit.server.io;
 
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
+import org.apache.jackrabbit.webdav.lock.LockManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,35 +30,6 @@ public class LockOperationManagerImpl implements LockOperationManager {
 
     private final List<LockHandler> lockHandlers = new ArrayList<LockHandler>();
 
-    /**
-     * @see LockOperationManager#lock(org.apache.jackrabbit.server.io.LockContext, org.apache.jackrabbit.webdav.DavResource)
-     */
-    public boolean lock(LockContext lockContext, DavResource member) throws DavException {
-        boolean success = false;
-        LockHandler[] lockHandlers = getLockHandlers();
-        for (int i = 0; i < lockHandlers.length && !success; i++) {
-            LockHandler dh = lockHandlers[i];
-            if (dh.canLock(lockContext, member)) {
-                success = dh.lock(lockContext, member);
-            }
-        }
-        return success;
-    }
-
-    /**
-     * @see LockOperationManager#unlock(org.apache.jackrabbit.server.io.LockContext, org.apache.jackrabbit.webdav.DavResource)
-     */
-    public boolean unlock(LockContext lockContext, DavResource member) throws DavException {
-        boolean success = false;
-        LockHandler[] lockHandlers = getLockHandlers();
-        for (int i = 0; i < lockHandlers.length && !success; i++) {
-            LockHandler dh = lockHandlers[i];
-            if (dh.canUnlock(lockContext, member)) {
-                success = dh.unlock(lockContext, member);
-            }
-        }
-        return success;
-    }
 
     /**
      * @see LockOperationManager#addLockHandler(org.apache.jackrabbit.server.io.LockHandler)
@@ -75,6 +47,18 @@ public class LockOperationManagerImpl implements LockOperationManager {
      */
     public LockHandler[] getLockHandlers() {
         return lockHandlers.toArray(new LockHandler[lockHandlers.size()]);
+    }
+
+    @Override
+    public LockManager getLockManager(LockContext lockContext, DavResource member) {
+        LockHandler[] lockHandlers = getLockHandlers();
+        for (int i = 0; i < lockHandlers.length; i++) {
+            LockHandler lh = lockHandlers[i];
+            if (lh.canLock(lockContext, member)) {
+                return lh.getLockManager();
+            }
+        }
+        return null;
     }
 
     /**

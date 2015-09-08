@@ -19,6 +19,7 @@ package org.apache.jackrabbit.server.io;
 
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
+import org.apache.jackrabbit.webdav.lock.LockManager;
 
 /**
  * The LockManager handles LOCK operation by delegating it to its handlers. It also provides a way
@@ -26,28 +27,6 @@ import org.apache.jackrabbit.webdav.DavResource;
  * must invoke the registered lock handlers appropriately when a LOCK/UNLOCK operation is to be performed
  */
 public interface LockOperationManager {
-
-    /**
-     * Delegates the lock operation to the fist handler that accepts it.
-     *
-     * @param lockContext The context associated with the LOCK operation
-     * @param resource The resource to be locked
-     * @return {@code true} if this instance successfully executed the lock operation with the given parameters;
-     *         {@code false} otherwise.
-     * @throws org.apache.jackrabbit.webdav.DavException If an error occurs.
-     */
-    public boolean lock(LockContext lockContext, DavResource resource) throws DavException;
-
-    /**
-     * Delegates the unlock operation to the fist handler that accepts it.
-     *
-     * @param lockContext The context associated with the LOCK operation
-     * @param resource The resource to be unlocked
-     * @return {@code true} if this instance successfully executed the unlock operation with the given parameters;
-     *         {@code false} otherwise.
-     * @throws org.apache.jackrabbit.webdav.DavException If an error occurs.
-     */
-    public boolean unlock(LockContext lockContext, DavResource resource) throws DavException;
 
     /**
      * Registers a lock handler
@@ -62,4 +41,6 @@ public interface LockOperationManager {
      * @return An array of all the registered lock handlers.
      */
     public LockHandler[] getLockHandlers();
+
+    public LockManager getLockManager(LockContext lockContext, DavResource member);
 }
