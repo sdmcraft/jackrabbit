@@ -17,22 +17,21 @@
 
 package org.apache.jackrabbit.server.io;
 
-import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.lock.LockManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LockOperationManagerImpl implements LockOperationManager {
+public class LockHandlerManagerImpl implements LockHandlerManager {
 
-    private static LockOperationManager DEFAULT_MANAGER;
+    private static LockHandlerManager DEFAULT_MANAGER;
 
     private final List<LockHandler> lockHandlers = new ArrayList<LockHandler>();
 
 
     /**
-     * @see LockOperationManager#addLockHandler(org.apache.jackrabbit.server.io.LockHandler)
+     * @see LockHandlerManager#addLockHandler(org.apache.jackrabbit.server.io.LockHandler)
      */
     public void addLockHandler(LockHandler lockHandler) {
         if (lockHandler == null) {
@@ -43,7 +42,7 @@ public class LockOperationManagerImpl implements LockOperationManager {
     }
 
     /**
-     * @see LockOperationManager#getLockHandlers()
+     * @see LockHandlerManager#getLockHandlers()
      */
     public LockHandler[] getLockHandlers() {
         return lockHandlers.toArray(new LockHandler[lockHandlers.size()]);
@@ -64,10 +63,12 @@ public class LockOperationManagerImpl implements LockOperationManager {
     /**
      * Returns this lock manager singleton
      */
-    public static LockOperationManager getDefaultManager() {
+    public static LockHandlerManager getDefaultManager(LockManager defaultLockManager) {
         if (DEFAULT_MANAGER == null) {
-            LockOperationManager manager = new LockOperationManagerImpl();
-            manager.addLockHandler(new DefaultHandler());
+            LockHandlerManager manager = new LockHandlerManagerImpl();
+            DefaultHandler defaultHandler = new DefaultHandler();
+            defaultHandler.setDefaultLockManager(defaultLockManager);
+            manager.addLockHandler(defaultHandler);
             DEFAULT_MANAGER = manager;
         }
         return DEFAULT_MANAGER;

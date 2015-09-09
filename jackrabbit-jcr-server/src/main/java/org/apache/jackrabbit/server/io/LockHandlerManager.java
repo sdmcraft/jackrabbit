@@ -26,7 +26,7 @@ import org.apache.jackrabbit.webdav.lock.LockManager;
  * to register {@link LockHandler} within it. Implementers of this interface
  * must invoke the registered lock handlers appropriately when a LOCK/UNLOCK operation is to be performed
  */
-public interface LockOperationManager {
+public interface LockHandlerManager {
 
     /**
      * Registers a lock handler

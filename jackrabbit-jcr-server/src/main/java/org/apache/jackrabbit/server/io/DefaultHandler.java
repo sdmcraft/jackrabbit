@@ -24,6 +24,7 @@ import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.DavServletResponse;
 import org.apache.jackrabbit.webdav.jcr.JcrDavException;
+import org.apache.jackrabbit.webdav.lock.LockManager;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavProperty;
@@ -71,7 +72,7 @@ import java.util.HashMap;
  * Subclasses therefore should provide their own {@link #importData(ImportContext, boolean, Node)
  * importData} method, that handles the data according their needs.
  */
-public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandler, DeleteHandler {
+public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandler, DeleteHandler, LockHandler {
 
     private static Logger log = LoggerFactory.getLogger(DefaultHandler.class);
 
@@ -82,6 +83,8 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
     private String contentNodetype;
 
     private IOManager ioManager;
+
+    private LockManager lockManager;
 
     /**
      * Creates a new <code>DefaultHandler</code> with default nodetype definitions:<br>
@@ -125,11 +128,27 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
      * @param contentNodetype
      */
     public DefaultHandler(IOManager ioManager, String collectionNodetype, String defaultNodetype, String contentNodetype) {
+        this(ioManager, null, collectionNodetype, defaultNodetype, contentNodetype);
+    }
+
+    /**
+     * Creates a new <code>DefaultHandler</code>. Please note that the specified
+     * nodetypes must match the definitions of the defaults.
+     *
+     * @param ioManager
+     * @param collectionNodetype
+     * @param defaultNodetype
+     * @param contentNodetype
+     * @param lockManager
+     */
+    public DefaultHandler(IOManager ioManager, LockManager lockManager, String collectionNodetype, String defaultNodetype, String contentNodetype) {
         this.ioManager = ioManager;
+        this.lockManager = lockManager;
 
         this.collectionNodetype = collectionNodetype;
         this.defaultNodetype = defaultNodetype;
         this.contentNodetype = contentNodetype;
+
     }
 
     /**
@@ -882,5 +901,24 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
 
     public void setContentNodetype(String contentNodetype) {
         this.contentNodetype = contentNodetype;
+    }
+
+    @Override
+    public boolean canLock(LockContext lockContext, DavResource resource) {
+        return true;
+    }
+
+    @Override
+    public boolean canUnlock(LockContext lockContext, DavResource resource) {
+        return true;
+    }
+
+    @Override
+    public LockManager getLockManager() {
+        return lockManager;
+    }
+
+    public void setDefaultLockManager(LockManager lockManager) {
+        this.lockManager = lockManager;
     }
 }

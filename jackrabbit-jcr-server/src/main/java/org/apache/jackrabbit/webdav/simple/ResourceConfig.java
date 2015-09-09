@@ -39,11 +39,12 @@ import org.apache.jackrabbit.server.io.DeleteManager;
 import org.apache.jackrabbit.server.io.DeleteManagerImpl;
 import org.apache.jackrabbit.server.io.IOHandler;
 import org.apache.jackrabbit.server.io.IOManager;
-import org.apache.jackrabbit.server.io.LockOperationManager;
-import org.apache.jackrabbit.server.io.LockOperationManagerImpl;
+import org.apache.jackrabbit.server.io.LockHandlerManager;
+import org.apache.jackrabbit.server.io.LockHandlerManagerImpl;
 import org.apache.jackrabbit.server.io.PropertyHandler;
 import org.apache.jackrabbit.server.io.PropertyManager;
 import org.apache.jackrabbit.server.io.PropertyManagerImpl;
+import org.apache.jackrabbit.webdav.lock.LockManager;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.ElementIterator;
 import org.apache.jackrabbit.webdav.xml.Namespace;
@@ -79,18 +80,24 @@ public class ResourceConfig {
      * Content type detector.
      */
     private final Detector detector;
+    private final LockManager lockManager;
 
     private ItemFilter itemFilter;
     private IOManager ioManager;
     private CopyMoveManager cmManager;
     private PropertyManager propManager;
     private DeleteManager deleteManager;
-    private LockOperationManager lockOperationManager;
+    private LockHandlerManager lockHandlerManager;
     private String[] nodetypeNames = new String[0];
     private boolean collectionNames = false;
 
     public ResourceConfig(Detector detector) {
+        this(detector, null);
+    }
+
+    public ResourceConfig(Detector detector, LockManager lockManager) {
         this.detector = detector;
+        this.lockManager = lockManager;
     }
 
     /**
@@ -491,15 +498,15 @@ public class ResourceConfig {
     }
 
     /**
-     * Returns the lock manager.
-     * @return the lock manager
+     * Returns the lock handler manager.
+     * @return the lock handler manager
      */
-    public LockOperationManager getLockOperationManager() {
-        if (lockOperationManager == null) {
+    public LockHandlerManager getLockHandlerManager() {
+        if (lockHandlerManager == null) {
             log.debug("Missing lock-operation-manager > building default.");
-            lockOperationManager = LockOperationManagerImpl.getDefaultManager();
+            lockHandlerManager = LockHandlerManagerImpl.getDefaultManager(lockManager);
         }
-        return lockOperationManager;
+        return lockHandlerManager;
     }
 
     /**

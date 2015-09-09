@@ -17,6 +17,7 @@
 package org.apache.jackrabbit.webdav.simple;
 
 import org.apache.jackrabbit.server.io.LockContextImpl;
+import org.apache.jackrabbit.server.io.LockHandlerManager;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavMethods;
 import org.apache.jackrabbit.webdav.DavResource;
@@ -97,7 +98,9 @@ public class ResourceFactoryImpl implements DavResourceFactory {
         JcrDavSession.checkImplementation(davSession);
         JcrDavSession jcrDavSession = (JcrDavSession)davSession;
         Session jcrSession = jcrDavSession.getRepositorySession();
-        LockManager resourceLockMgr = resourceConfig.getLockOperationManager().getLockManager(new LockContextImpl(jcrSession), resource);
+        LockHandlerManager lockHandlerManager = resourceConfig.getLockHandlerManager();
+        LockManager resourceLockMgr = lockHandlerManager.getLockManager(new LockContextImpl(jcrSession), resource);
+
         if(resourceLockMgr != null) {
             resource.addLockManager(resourceLockMgr);
         } else {
