@@ -38,16 +38,6 @@ public interface LockHandler {
      */
     public boolean canLock(LockContext lockContext, DavResource resource);
 
-    /**
-     * Validates if this handler is able to execute a unlock operation with the given
-     * parameters.
-     *
-     * @param lockContext The context of the lock
-     * @param resource The resource to be unlocked
-     * @return {@code true} if this instance can successfully executed the unlock operation with the given parameters;
-     *         {@code false} otherwise.
-     */
-    public boolean canUnlock(LockContext lockContext, DavResource resource);
 
     public LockManager getLockManager();
 

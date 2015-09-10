@@ -909,11 +909,6 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
     }
 
     @Override
-    public boolean canUnlock(LockContext lockContext, DavResource resource) {
-        return true;
-    }
-
-    @Override
     public LockManager getLockManager() {
         return lockManager;
     }
