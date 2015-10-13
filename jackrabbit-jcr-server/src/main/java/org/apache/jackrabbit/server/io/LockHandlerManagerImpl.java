@@ -48,13 +48,16 @@ public class LockHandlerManagerImpl implements LockHandlerManager {
         return lockHandlers.toArray(new LockHandler[lockHandlers.size()]);
     }
 
+    /**
+     * @see org.apache.jackrabbit.server.io.LockHandler#getLockManager(org.apache.jackrabbit.webdav.DavResource)
+     */
     @Override
-    public LockManager getLockManager(LockContext lockContext, DavResource member) {
+    public LockManager getLockManager(LockContext lockContext, DavResource resource) {
         LockHandler[] lockHandlers = getLockHandlers();
         for (int i = 0; i < lockHandlers.length; i++) {
             LockHandler lh = lockHandlers[i];
-            if (lh.canLock(lockContext, member)) {
-                return lh.getLockManager();
+            if (lh.canLock(lockContext, resource)) {
+                return lh.getLockManager(resource);
             }
         }
         return null;

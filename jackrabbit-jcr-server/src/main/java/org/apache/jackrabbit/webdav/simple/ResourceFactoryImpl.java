@@ -99,7 +99,11 @@ public class ResourceFactoryImpl implements DavResourceFactory {
         JcrDavSession jcrDavSession = (JcrDavSession)davSession;
         Session jcrSession = jcrDavSession.getRepositorySession();
         LockHandlerManager lockHandlerManager = resourceConfig.getLockHandlerManager();
-        LockManager resourceLockMgr = lockHandlerManager.getLockManager(new LockContextImpl(jcrSession), resource);
+        LockManager resourceLockMgr = null;
+
+        if(lockHandlerManager != null) {
+            resourceLockMgr = lockHandlerManager.getLockManager(new LockContextImpl(jcrSession), resource);
+        }
 
         if(resourceLockMgr != null) {
             resource.addLockManager(resourceLockMgr);

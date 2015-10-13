@@ -17,28 +17,32 @@
 
 package org.apache.jackrabbit.server.io;
 
-import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.lock.LockManager;
 
 /**
  * The LockHandler is invoked when a webdav LOCK/UNLOCK request is received. Implementers of this interface should plugin
- * their handling of LOCK/UNLOCK request here
+ * their LOCK related checks here and ensure that an appropriate LockManager is returned only if the checks succeed.
  */
 public interface LockHandler {
 
     /**
-     * Validates if this handler is able to execute a lock operation with the given
-     * parameters.
+     * Validates if this handler can execute a lock operation on the given resource.
      *
      * @param lockContext The context of the lock
      * @param resource The resource to be locked
-     * @return {@code true} if this instance can successfully executed the lock operation with the given parameters;
+     * @return {@code true} if this instance is permitted to execute lock operation on the given resource;
      *         {@code false} otherwise.
      */
     public boolean canLock(LockContext lockContext, DavResource resource);
 
-
-    public LockManager getLockManager();
+    /**
+     * Returns a LockManager. Implementers must take care that a lockmanager is returned only if this handler is
+     * permitted to lock the resource.
+     *
+     * @param resource which is to be locked
+     * @return lockmanger for performing lock related webdav operations on specified resource
+     */
+    public LockManager getLockManager(DavResource resource);
 
 }

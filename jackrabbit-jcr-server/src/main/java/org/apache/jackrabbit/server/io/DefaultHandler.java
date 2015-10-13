@@ -771,6 +771,36 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
         }
     }
 
+    //----------------------------------------------------< LockHandler >---
+
+    /**
+     * @see LockHandler#canLock(LockContext, org.apache.jackrabbit.webdav.DavResource)
+     */
+    @Override
+    public boolean canLock(LockContext lockContext, DavResource resource) {
+        return true;
+    }
+
+    /**
+     * @see LockHandler#getLockManager(org.apache.jackrabbit.webdav.DavResource)
+     * @return
+     * @param resource
+     */
+    @Override
+    public LockManager getLockManager(DavResource resource) {
+        return lockManager;
+    }
+
+    /**
+     * Sets the default LockManager for this handler. The default lock manager would be used for performing the lock
+     * operation for this handler
+     * @param lockManager The default LockManager
+     */
+    public void setDefaultLockManager(LockManager lockManager) {
+        this.lockManager = lockManager;
+    }
+
+
     //------------------------------------------------------------< private >---
     /**
      * Builds a webdav property name from the given jcrName. In case the jcrName
@@ -903,17 +933,4 @@ public class DefaultHandler implements IOHandler, PropertyHandler, CopyMoveHandl
         this.contentNodetype = contentNodetype;
     }
 
-    @Override
-    public boolean canLock(LockContext lockContext, DavResource resource) {
-        return true;
-    }
-
-    @Override
-    public LockManager getLockManager() {
-        return lockManager;
-    }
-
-    public void setDefaultLockManager(LockManager lockManager) {
-        this.lockManager = lockManager;
-    }
 }

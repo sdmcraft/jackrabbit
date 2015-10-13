@@ -17,7 +17,6 @@
 
 package org.apache.jackrabbit.server.io;
 
-import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.lock.LockManager;
 
@@ -42,5 +41,14 @@ public interface LockHandlerManager {
      */
     public LockHandler[] getLockHandlers();
 
-    public LockManager getLockManager(LockContext lockContext, DavResource member);
+    /**
+     * Returns a lockmanager for performing webdav lock operations on the specified resource. Implementers of this
+     * interface must query up the registered LockHandlers here and find one which is permitted to lock the
+     * specified resource. Once such a lockhandler is found, its LockManager should be returned.
+     *
+     * @param lockContext The LockContext for performing webdav lock operations on the specified resource
+     * @param resource The resource for which the lockmanager is needed
+     * @return The lockmanager for performing webdav lock operations on the specified resource
+     */
+    public LockManager getLockManager(LockContext lockContext, DavResource resource);
 }

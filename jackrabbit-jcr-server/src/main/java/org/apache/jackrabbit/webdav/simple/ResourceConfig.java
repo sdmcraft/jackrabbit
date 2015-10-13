@@ -16,21 +16,6 @@
  */
 package org.apache.jackrabbit.webdav.simple;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.jackrabbit.server.io.CopyMoveHandler;
 import org.apache.jackrabbit.server.io.CopyMoveManager;
 import org.apache.jackrabbit.server.io.CopyMoveManagerImpl;
@@ -40,11 +25,9 @@ import org.apache.jackrabbit.server.io.DeleteManagerImpl;
 import org.apache.jackrabbit.server.io.IOHandler;
 import org.apache.jackrabbit.server.io.IOManager;
 import org.apache.jackrabbit.server.io.LockHandlerManager;
-import org.apache.jackrabbit.server.io.LockHandlerManagerImpl;
 import org.apache.jackrabbit.server.io.PropertyHandler;
 import org.apache.jackrabbit.server.io.PropertyManager;
 import org.apache.jackrabbit.server.io.PropertyManagerImpl;
-import org.apache.jackrabbit.webdav.lock.LockManager;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.ElementIterator;
 import org.apache.jackrabbit.webdav.xml.Namespace;
@@ -53,6 +36,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <code>ResourceConfig</code>...
@@ -80,7 +77,6 @@ public class ResourceConfig {
      * Content type detector.
      */
     private final Detector detector;
-    private final LockManager lockManager;
 
     private ItemFilter itemFilter;
     private IOManager ioManager;
@@ -92,12 +88,7 @@ public class ResourceConfig {
     private boolean collectionNames = false;
 
     public ResourceConfig(Detector detector) {
-        this(detector, null);
-    }
-
-    public ResourceConfig(Detector detector, LockManager lockManager) {
         this.detector = detector;
-        this.lockManager = lockManager;
     }
 
     /**
@@ -498,14 +489,10 @@ public class ResourceConfig {
     }
 
     /**
-     * Returns the lock handler manager.
+     * Returns the lock handler manager contained by this ResourceConfig.
      * @return the lock handler manager
      */
     public LockHandlerManager getLockHandlerManager() {
-        if (lockHandlerManager == null) {
-            log.debug("Missing lock-operation-manager > building default.");
-            lockHandlerManager = LockHandlerManagerImpl.getDefaultManager(lockManager);
-        }
         return lockHandlerManager;
     }
 
