@@ -21,9 +21,8 @@ import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.lock.LockManager;
 
 /**
- * The LockManager handles LOCK operation by delegating it to its handlers. It also provides a way
- * to register {@link LockHandler} within it. Implementers of this interface
- * must invoke the registered lock handlers appropriately when a LOCK/UNLOCK operation is to be performed
+ * The LockHandlerManager provides a way to register {@link LockHandler} within it. It alos provides a way to get an
+ * appropriate LockManager for performing webdav lock operations on a resource.
  */
 public interface LockHandlerManager {
 

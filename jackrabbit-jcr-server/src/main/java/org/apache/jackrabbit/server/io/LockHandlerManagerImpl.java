@@ -23,12 +23,12 @@ import org.apache.jackrabbit.webdav.lock.LockManager;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @see org.apache.jackrabbit.server.io.LockHandlerManager
+ */
 public class LockHandlerManagerImpl implements LockHandlerManager {
 
-    private static LockHandlerManager DEFAULT_MANAGER;
-
     private final List<LockHandler> lockHandlers = new ArrayList<LockHandler>();
-
 
     /**
      * @see LockHandlerManager#addLockHandler(org.apache.jackrabbit.server.io.LockHandler)
