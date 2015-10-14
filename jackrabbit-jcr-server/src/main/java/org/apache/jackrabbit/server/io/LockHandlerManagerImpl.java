@@ -63,18 +63,4 @@ public class LockHandlerManagerImpl implements LockHandlerManager {
         return null;
     }
 
-    /**
-     * Returns this lock manager singleton
-     */
-    public static LockHandlerManager getDefaultManager(LockManager defaultLockManager) {
-        if (DEFAULT_MANAGER == null) {
-            LockHandlerManager manager = new LockHandlerManagerImpl();
-            DefaultHandler defaultHandler = new DefaultHandler();
-            defaultHandler.setDefaultLockManager(defaultLockManager);
-            manager.addLockHandler(defaultHandler);
-            DEFAULT_MANAGER = manager;
-        }
-        return DEFAULT_MANAGER;
-    }
-
 }
